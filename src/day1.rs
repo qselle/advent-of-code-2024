@@ -1,48 +1,40 @@
 use aoc_runner_derive::{aoc, aoc_generator};
 
-#[derive(Debug)]
-pub struct Locations {
-    left: Vec<usize>,
-    right: Vec<usize>,
-}
-
 #[aoc_generator(day1)]
-pub fn input_generator(input: &str) -> Locations {
-    // input.lines().fold((vec![], vec![]), |mut lists, l| {
-    //     let tmp = l.split("   ");
-    //     (
-    //         tmp.next().unwrap().parse().unwrap(),
-    //         tmp.next().unwrap().parse().unwrap(),
-    //     )
-    // })
+pub fn input_generator(input: &str) -> (Vec<usize>, Vec<usize>) {
     let mut left = Vec::new();
     let mut right = Vec::new();
 
     for l in input.lines() {
-        let mut tmp = l.split("   ");
-        left.push(tmp.next().unwrap().parse().unwrap());
-        right.push(tmp.next().unwrap().parse().unwrap());
+        let tmp = l.split_once("   ").unwrap();
+        left.push(tmp.0.parse().unwrap());
+        right.push(tmp.1.parse().unwrap());
     }
     right.sort();
     left.sort();
-    Locations { right, left }
+
+    (left, right)
 }
 
 #[aoc(day1, part1)]
-pub fn part1(input: &Locations) -> usize {
+pub fn part1(input: &(Vec<usize>, Vec<usize>)) -> usize {
     let mut sum = 0;
-    for n in 0..input.left.len() {
-        sum += input.left[n].abs_diff(input.right[n])
+
+    for n in 0..input.0.len() {
+        sum += input.0[n].abs_diff(input.1[n])
     }
+
     sum
 }
 
 #[aoc(day1, part2)]
-pub fn part2(input: &Locations) -> usize {
+pub fn part2(input: &(Vec<usize>, Vec<usize>)) -> usize {
     let mut sum = 0;
-    for n in 0..input.left.len() {
-        sum += input.left[n] * input.right.iter().filter(|&i| *i == input.left[n]).count()
+
+    for n in 0..input.0.len() {
+        sum += input.0[n] * input.1.iter().filter(|&i| *i == input.0[n]).count()
     }
+
     sum
 }
 
