@@ -7,16 +7,16 @@ Enter the competition: https://adventofcode.com/2024
 
 ## Build with `cargo-aoc`
 
-Install `cargo-aoc` crate:
+Install [`cargo-aoc`](https://crates.io/crates/cargo-aoc) crate:
 
 ```console
-air :: ~/Work/advent-of-code-2024 ‹main› » cargo install cargo-aoc
+advent-of-code-2024 $> cargo install cargo-aoc
 ```
 
 Run:
 
 ```console
-air :: ~/Work/advent-of-code-2024 ‹main*› » cargo aoc                                                                                 2 ↵
+advent-of-code-2024 $> cargo aoc                                                                                 2 ↵
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
    Compiling aoc-autobuild v0.3.0 (/Users/quentin/Work/advent-of-code-2024/target/aoc/aoc-autobuild)
     Finished `release` profile [optimized] target(s) in 0.12s
@@ -34,7 +34,7 @@ Day 1 - Part 2 : 21306195
 ## Test
 
 ```console
-air :: ~/Work/advent-of-code-2024 ‹main› » cargo test
+advent-of-code-2024 $> cargo test
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
      Running unittests src/lib.rs (target/debug/deps/advent_of_code_2024-027d060ec3f37a3f)
 
