@@ -9,33 +9,70 @@ pub fn input_generator(input: &str) -> Vec<Vec<usize>> {
 }
 
 #[aoc(day2, part1)]
-pub fn part1(input: &Vec<Vec<usize>>) -> usize {
+pub fn part1(input: &[Vec<usize>]) -> usize {
     input
         .iter()
-        .filter(|report| {
-            let increasing = if report[0] < report[1] { true } else { false };
-            let mut first = true;
+        .filter(|&report| {
+            let increasing = report[0] < report[1];
             let mut last = 0;
-            for val in report.iter() {
-                if first {
-                    last = *val;
-                    first = false;
+            for i in 0..report.len() {
+                if i == 0 {
+                    last = report[i];
                     continue;
                 }
-                if val.abs_diff(last) < 1 || val.abs_diff(last) > 3 {
+                if report[i].abs_diff(last) < 1 || report[i].abs_diff(last) > 3 {
                     return false;
                 }
-                if increasing && *val < last {
+                if increasing && report[i] < last {
                     return false;
                 }
-                if !increasing && *val > last {
+                if !increasing && report[i] > last {
                     return false;
                 }
-                last = *val;
+                last = report[i];
             }
             true
         })
-        .fold(0, |acc, _| acc + 1)
+        .count()
+}
+
+#[aoc(day2, part2)]
+pub fn part2(input: &[Vec<usize>]) -> usize {
+    input
+        .iter()
+        .filter(|&report| {
+            for i in 0..report.len() {
+                let mut new_report = report.clone();
+                new_report.remove(i);
+                let increasing = new_report[0] < new_report[1];
+                let mut last = 0;
+                let mut bad = false;
+                for j in 0..new_report.len() {
+                    if j == 0 {
+                        last = new_report[j];
+                        continue;
+                    }
+                    if new_report[j].abs_diff(last) < 1 || new_report[j].abs_diff(last) > 3 {
+                        bad = true;
+                        break;
+                    }
+                    if increasing && new_report[j] < last {
+                        bad = true;
+                        break;
+                    }
+                    if !increasing && new_report[j] > last {
+                        bad = true;
+                        break;
+                    }
+                    last = new_report[j];
+                }
+                if !bad {
+                    return true;
+                }
+            }
+            false
+        })
+        .count()
 }
 
 #[cfg(test)]
@@ -54,8 +91,8 @@ mod tests {
         assert_eq!(2, part1(&input_generator(INPUT)))
     }
 
-    // #[test]
-    // fn test_part2() {
-    //     assert_eq!(31, part2(&input_generator(INPUT)))
-    // }
+    #[test]
+    fn test_part2() {
+        assert_eq!(4, part2(&input_generator(INPUT)))
+    }
 }
