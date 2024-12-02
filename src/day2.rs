@@ -14,22 +14,22 @@ pub fn part1(input: &[Vec<usize>]) -> usize {
         .iter()
         .filter(|&report| {
             let increasing = report[0] < report[1];
-            let mut last = 0;
-            for i in 0..report.len() {
+            let mut last_level = 0;
+            for (i, level) in report.iter().enumerate() {
                 if i == 0 {
-                    last = report[i];
+                    last_level = *level;
                     continue;
                 }
-                if report[i].abs_diff(last) < 1 || report[i].abs_diff(last) > 3 {
+                if level.abs_diff(last_level) < 1 || level.abs_diff(last_level) > 3 {
                     return false;
                 }
-                if increasing && report[i] < last {
+                if increasing && *level < last_level {
                     return false;
                 }
-                if !increasing && report[i] > last {
+                if !increasing && *level > last_level {
                     return false;
                 }
-                last = report[i];
+                last_level = *level;
             }
             true
         })
@@ -44,29 +44,31 @@ pub fn part2(input: &[Vec<usize>]) -> usize {
             for i in 0..report.len() {
                 let mut new_report = report.clone();
                 new_report.remove(i);
+
                 let increasing = new_report[0] < new_report[1];
-                let mut last = 0;
-                let mut bad = false;
-                for j in 0..new_report.len() {
-                    if j == 0 {
-                        last = new_report[j];
+                let mut last_level = 0;
+
+                let mut bad_level = false;
+                for (i, level) in new_report.iter().enumerate() {
+                    if i == 0 {
+                        last_level = *level;
                         continue;
                     }
-                    if new_report[j].abs_diff(last) < 1 || new_report[j].abs_diff(last) > 3 {
-                        bad = true;
+                    if level.abs_diff(last_level) < 1 || level.abs_diff(last_level) > 3 {
+                        bad_level = true;
                         break;
                     }
-                    if increasing && new_report[j] < last {
-                        bad = true;
+                    if increasing && *level < last_level {
+                        bad_level = true;
                         break;
                     }
-                    if !increasing && new_report[j] > last {
-                        bad = true;
+                    if !increasing && *level > last_level {
+                        bad_level = true;
                         break;
                     }
-                    last = new_report[j];
+                    last_level = *level;
                 }
-                if !bad {
+                if !bad_level {
                     return true;
                 }
             }
