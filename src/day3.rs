@@ -27,14 +27,14 @@ pub fn part1(input: &[String]) -> usize {
 
 #[aoc(day3, part2)]
 pub fn part2(input: &[String]) -> usize {
-    let mut activate = true;
+    let mut activated = true;
     let re = Regex::new(r"(?<a>\d+),(?<b>\d+)").unwrap();
     input.iter().fold(0, |mut acc, m| {
         match m.as_str() {
-            "do()" => activate = true,
-            "don't()" => activate = false,
+            "do()" => activated = true,
+            "don't()" => activated = false,
             _ => {
-                if activate {
+                if activated {
                     let caps = re.captures(m).unwrap();
                     acc +=
                         caps["a"].parse::<usize>().unwrap() * caps["b"].parse::<usize>().unwrap();
