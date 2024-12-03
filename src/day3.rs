@@ -11,8 +11,11 @@ pub fn input_generator(input: &str) -> Vec<String> {
 
 #[aoc(day3, part1)]
 pub fn part1(input: &[String]) -> usize {
-    dbg!(input);
-    0
+    let re = Regex::new(r"(?<a>\d+),(?<b>\d+)").unwrap();
+    input.iter().fold(0, |acc, m| {
+        let caps = re.captures(m).unwrap();
+        acc + (&caps["a"].parse::<usize>().unwrap() * &caps["b"].parse::<usize>().unwrap())
+    })
 }
 
 #[cfg(test)]
@@ -23,7 +26,7 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(2, part1(&input_generator(INPUT)))
+        assert_eq!(161, part1(&input_generator(INPUT)))
     }
 
     //     #[test]
