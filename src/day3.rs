@@ -14,9 +14,19 @@ pub fn part1(input: &[String]) -> usize {
     let re = Regex::new(r"(?<a>\d+),(?<b>\d+)").unwrap();
     input.iter().fold(0, |acc, m| {
         let caps = re.captures(m).unwrap();
-        acc + (&caps["a"].parse::<usize>().unwrap() * &caps["b"].parse::<usize>().unwrap())
+        acc + (caps["a"].parse::<usize>().unwrap() * caps["b"].parse::<usize>().unwrap())
     })
 }
+
+#[aoc(day3, part2)]
+pub fn part2(input: &[String]) -> usize {
+    let re = Regex::new(r"(?<a>\d+),(?<b>\d+)").unwrap();
+    input.iter().fold(0, |acc, m| {
+        let caps = re.captures(m).unwrap();
+        acc + (caps["a"].parse::<usize>().unwrap() * caps["b"].parse::<usize>().unwrap())
+    })
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -29,8 +39,8 @@ mod tests {
         assert_eq!(161, part1(&input_generator(INPUT)))
     }
 
-    //     #[test]
-    //     fn test_part2() {
-    //         assert_eq!(4, part2(&input_generator(INPUT)))
-    //     }
+    #[test]
+    fn test_part2() {
+        assert_eq!(4, part2(&input_generator(INPUT)))
+    }
 }
