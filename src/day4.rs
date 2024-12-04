@@ -52,29 +52,37 @@ pub fn part1(input: &[Vec<char>]) -> usize {
 pub fn part2(input: &[Vec<char>]) -> usize {
     let mut num = 0;
     let directions = [
-        (1, 1),   // down-right
-        (-1, -1), // up-left
-        (1, -1),  // down-left
-        (-1, 1),  // up-right
+        ((1, 1), (-1, -1)), // down-right and up-left
+        ((1, -1), (-1, 1)), // down-left and up-right
     ];
 
     for y in 0..input.len() {
         for x in 0..input[y].len() {
-            for &(dy, dx) in &directions {
-                if (0..5).all(|i| {
-                    let ny = y as isize + i * dy;
-                    let nx = x as isize + i * dx;
-                    ny >= 0
-                        && ny < input.len() as isize
-                        && nx >= 0
-                        && nx < input[y].len() as isize
-                        && match i {
-                            0 => input[ny as usize][nx as usize] == 'A',
-                            1 => input[ny as usize][nx as usize] == 'S',
-                            2 => input[ny as usize][nx as usize] == 'M',
-                            _ => false,
-                        }
-                }) {
+            if input[y][x] == 'A' {
+                let mut mas = 0;
+                for &((dy1, dx1), (dy2, dx2)) in &directions {
+                    let ny1 = y as isize + dy1;
+                    let nx1 = x as isize + dx1;
+                    let ny2 = y as isize + dy2;
+                    let nx2 = x as isize + dx2;
+
+                    if ny1 >= 0
+                        && ny1 < input.len() as isize
+                        && nx1 >= 0
+                        && nx1 < input[y].len() as isize
+                        && ny2 >= 0
+                        && ny2 < input.len() as isize
+                        && nx2 >= 0
+                        && nx2 < input[y].len() as isize
+                        && ((input[ny1 as usize][nx1 as usize] == 'M'
+                            && input[ny2 as usize][nx2 as usize] == 'S')
+                            || (input[ny1 as usize][nx1 as usize] == 'S'
+                                && input[ny2 as usize][nx2 as usize] == 'M'))
+                    {
+                        mas += 1;
+                    }
+                }
+                if mas == 2 {
                     num += 1;
                 }
             }
