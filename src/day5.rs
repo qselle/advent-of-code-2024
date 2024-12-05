@@ -1,5 +1,5 @@
 use aoc_runner_derive::{aoc, aoc_generator};
-use std::collections::HashMap;
+use std::{cmp::Ordering, collections::HashMap, vec};
 
 #[derive(Debug)]
 pub struct Rules {
@@ -19,7 +19,6 @@ pub fn input_generator(input: &str) -> Rules {
                 .entry(sides.1.parse().unwrap())
                 .or_insert_with(Vec::new)
                 .push(sides.0.parse().unwrap());
-            // ordering.push(l.split("|").map(|s| s.parse().unwrap()).collect());
         }
         if l.contains(",") {
             updates.push(l.split(",").map(|s| s.parse().unwrap()).collect());
@@ -42,6 +41,39 @@ pub fn part1(input: &Rules) -> usize {
             }
         }
         total += update[update.len() / 2]
+    }
+    total
+}
+
+#[aoc(day5, part2)]
+pub fn part2(input: &Rules) -> usize {
+    let mut invalids = vec![];
+    'outer: for update in &input.updates {
+        for n in 0..update.len() {
+            if let Some(must_be_before) = input.ordering.get(&update[n]) {
+                for m in update.iter().skip(n) {
+                    if must_be_before.contains(m) {
+                        invalids.push(update);
+                        continue 'outer;
+                    }
+                }
+            }
+        }
+    }
+
+    let mut total = 0;
+    for invalid in invalids {
+        let mut inv = invalid.clone();
+        inv.sort_by(|a, b| {
+            dbg!(a, b);
+            if let Some(must_be_before) = input.ordering.get(b) {
+                if must_be_before.contains(a) {
+                    return Ordering::Less;
+                }
+            }
+            Ordering::Equal
+        });
+        total += inv[inv.len() / 2]
     }
     total
 }
@@ -84,8 +116,8 @@ mod tests {
         assert_eq!(143, part1(&input_generator(INPUT)))
     }
 
-    // #[test]
-    // fn test_part2() {
-    //     assert_eq!(9, part2(&input_generator(INPUT)))
-    // }
+    #[test]
+    fn test_part2() {
+        assert_eq!(123, part2(&input_generator(INPUT)))
+    }
 }
