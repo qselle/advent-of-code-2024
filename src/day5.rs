@@ -11,18 +11,17 @@ pub struct Rules {
 pub fn input_generator(input: &str) -> Rules {
     let mut ordering = HashMap::new();
     let mut updates = vec![];
+    let (one, two) = input.split_once("\n\n").unwrap();
 
-    for l in input.lines() {
-        if l.contains("|") {
-            let sides = l.split_once("|").unwrap();
-            ordering
-                .entry(sides.1.parse().unwrap())
-                .or_insert_with(Vec::new)
-                .push(sides.0.parse().unwrap());
-        }
-        if l.contains(",") {
-            updates.push(l.split(",").map(|s| s.parse().unwrap()).collect());
-        }
+    for l in one.lines() {
+        let sides = l.split_once("|").unwrap();
+        ordering
+            .entry(sides.1.parse().unwrap())
+            .or_insert_with(Vec::new)
+            .push(sides.0.parse().unwrap());
+    }
+    for l in two.lines() {
+        updates.push(l.split(",").map(|s| s.parse().unwrap()).collect());
     }
     Rules { ordering, updates }
 }
@@ -65,7 +64,6 @@ pub fn part2(input: &Rules) -> usize {
     for invalid in invalids {
         let mut inv = invalid.clone();
         inv.sort_by(|a, b| {
-            dbg!(a, b);
             if let Some(must_be_before) = input.ordering.get(b) {
                 if must_be_before.contains(a) {
                     return Ordering::Less;
