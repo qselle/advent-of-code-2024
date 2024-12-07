@@ -19,7 +19,7 @@ pub fn input_generator(input: &str) -> Vec<Calibration> {
                 .map(|n| n.parse().unwrap())
                 .collect(),
         });
-        ancc
+        acc
     })
 }
 
