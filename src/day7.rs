@@ -1,17 +1,17 @@
 use aoc_runner_derive::{aoc, aoc_generator};
 
 #[derive(Debug)]
-pub struct Calibration {
-    value: usize,
+pub struct Equation {
+    result: usize,
     numbers: Vec<usize>,
 }
 
 #[aoc_generator(day7)]
-pub fn input_generator(input: &str) -> Vec<Calibration> {
+pub fn input_generator(input: &str) -> Vec<Equation> {
     input.lines().fold(vec![], |mut acc, l| {
         let tmp = l.split_once(":").unwrap();
-        acc.push(Calibration {
-            value: tmp.0.parse().unwrap(),
+        acc.push(Equation {
+            result: tmp.0.parse().unwrap(),
             numbers: tmp
                 .1
                 .trim()
@@ -50,22 +50,22 @@ pub fn test_calibration(
 }
 
 #[aoc(day7, part1)]
-pub fn part1(input: &[Calibration]) -> usize {
+pub fn part1(input: &[Equation]) -> usize {
     let mut sum = 0;
     for c in input {
-        if test_calibration(c.numbers[0], c.value, 0, &c.numbers, false) {
-            sum += c.value;
+        if test_calibration(c.numbers[0], c.result, 0, &c.numbers, false) {
+            sum += c.result;
         }
     }
     sum
 }
 
 #[aoc(day7, part2)]
-pub fn part2(input: &[Calibration]) -> usize {
+pub fn part2(input: &[Equation]) -> usize {
     let mut sum = 0;
     for c in input {
-        if test_calibration(c.numbers[0], c.value, 0, &c.numbers, true) {
-            sum += c.value;
+        if test_calibration(c.numbers[0], c.result, 0, &c.numbers, true) {
+            sum += c.result;
         }
     }
     sum
