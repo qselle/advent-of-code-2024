@@ -19,11 +19,17 @@ pub fn input_generator(input: &str) -> Vec<Calibration> {
                 .map(|n| n.parse().unwrap())
                 .collect(),
         });
-        acc
+        ancc
     })
 }
 
-pub fn test_calibration(current: usize, target: usize, index: usize, params: &[usize]) -> bool {
+pub fn test_calibration(
+    current: usize,
+    target: usize,
+    index: usize,
+    params: &[usize],
+    part2: bool,
+) -> bool {
     let index = index + 1;
     if index >= params.len() {
         if current == target {
@@ -31,15 +37,34 @@ pub fn test_calibration(current: usize, target: usize, index: usize, params: &[u
         }
         return false;
     }
-    test_calibration(current * params[index], target, index, params)
-        || test_calibration(current + params[index], target, index, params)
+    test_calibration(current * params[index], target, index, params, part2)
+        || test_calibration(current + params[index], target, index, params, part2)
+        || (part2
+            && test_calibration(
+                current * 10_usize.pow(params[index].to_string().len() as u32) + params[index],
+                target,
+                index,
+                params,
+                part2,
+            ))
 }
 
 #[aoc(day7, part1)]
 pub fn part1(input: &[Calibration]) -> usize {
     let mut sum = 0;
     for c in input {
-        if test_calibration(c.numbers[0], c.value, 0, &c.numbers) {
+        if test_calibration(c.numbers[0], c.value, 0, &c.numbers, false) {
+            sum += c.value;
+        }
+    }
+    sum
+}
+
+#[aoc(day7, part2)]
+pub fn part2(input: &[Calibration]) -> usize {
+    let mut sum = 0;
+    for c in input {
+        if test_calibration(c.numbers[0], c.value, 0, &c.numbers, true) {
             sum += c.value;
         }
     }
@@ -62,11 +87,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(1, part1(&input_generator(INPUT)))
+        assert_eq!(3749, part1(&input_generator(INPUT)))
     }
 
-    // #[test]
-    // fn test_part2() {
-    //     assert_eq!(0, part2(&input_generator(INPUT)))
-    // }
+    #[test]
+    fn test_part2() {
+        assert_eq!(11387, part2(&input_generator(INPUT)))
+    }
 }
