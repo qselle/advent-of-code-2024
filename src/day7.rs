@@ -5,19 +5,45 @@ pub struct Calibration {
     value: usize,
     numbers: Vec<usize>,
 }
+
 #[aoc_generator(day7)]
-pub fn input_generator(_input: &str) -> Vec<Calibration> {
-    // input.lines().fold(vec![], |mut reports, l| {
-    //     reports.push(l.trim().split(" ").map(|s| s.parse().unwrap()).collect());
-    //     reports
-    // })
-    vec![]
+pub fn input_generator(input: &str) -> Vec<Calibration> {
+    input.lines().fold(vec![], |mut acc, l| {
+        let tmp = l.split_once(":").unwrap();
+        acc.push(Calibration {
+            value: tmp.0.parse().unwrap(),
+            numbers: tmp
+                .1
+                .trim()
+                .split(" ")
+                .map(|n| n.parse().unwrap())
+                .collect(),
+        });
+        acc
+    })
+}
+
+pub fn test_calibration(current: usize, target: usize, index: usize, params: &[usize]) -> bool {
+    let index = index + 1;
+    if index >= params.len() {
+        if current == target {
+            return true;
+        }
+        return false;
+    }
+    test_calibration(current * params[index], target, index, params)
+        || test_calibration(current + params[index], target, index, params)
 }
 
 #[aoc(day7, part1)]
 pub fn part1(input: &[Calibration]) -> usize {
-    dbg!(input);
-    0
+    let mut sum = 0;
+    for c in input {
+        if test_calibration(c.numbers[0], c.value, 0, &c.numbers) {
+            sum += c.value;
+        }
+    }
+    sum
 }
 
 #[cfg(test)]
@@ -36,7 +62,7 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(0, part1(&input_generator(INPUT)))
+        assert_eq!(1, part1(&input_generator(INPUT)))
     }
 
     // #[test]
