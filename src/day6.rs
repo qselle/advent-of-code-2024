@@ -19,7 +19,7 @@ pub fn input_generator(input: &str) -> Map {
     }
 }
 
-#[derive(PartialEq, Copy, Clone)]
+#[derive(PartialEq, Eq, Copy, Clone)]
 enum Direction {
     Up,
     Down,
@@ -46,7 +46,8 @@ pub fn part1(input: &Map) -> usize {
     let (mut row, mut col) = input.current;
     let row_limit = input.map.len();
     let col_limit = input.map[0].len();
-    let mut total: usize = 0;
+    let mut total: usize = 1;
+    visited[row][col] = 'X';
     loop {
         let (next_row, next_col) = match direction {
             Direction::Up if row > 0 => (row - 1, col),
@@ -68,6 +69,14 @@ pub fn part1(input: &Map) -> usize {
             col = next_col;
         }
     }
+    // for i in visited {
+    //     for j in i {
+    //         print!("{j}");
+    //     }
+    //     println!();
+    // }
+    // println!();
+    // println!();
     total
 }
 
@@ -80,7 +89,9 @@ pub fn part2(input: &Map) -> usize {
     let col_limit = input.map[0].len();
 
     let (mut row, mut col) = input.current;
+    let mut visited = input.map.clone();
 
+    visited[row][col] = 'X';
     loop {
         let (next_row, next_col) = match direction {
             Direction::Up if row > 0 => (row - 1, col),
@@ -92,7 +103,11 @@ pub fn part2(input: &Map) -> usize {
 
         if input.map[next_row][next_col] == '#' {
             direction = direction.rotate();
+        } else if visited[next_row][next_col] == 'X' {
+            row = next_row;
+            col = next_col;
         } else {
+            visited[next_row][next_col] = 'X';
             let mut loop_visited = input.map.clone();
             let mut loop_direction = direction;
             loop_visited[next_row][next_col] = 'O';
@@ -101,6 +116,8 @@ pub fn part2(input: &Map) -> usize {
 
             let (mut loop_row, mut loop_col) = (row, col);
 
+            row = next_row;
+            col = next_col;
             loop {
                 let (next_loop_row, next_loop_col) = match loop_direction {
                     Direction::Up if loop_row > 0 => (loop_row - 1, loop_col),
@@ -123,26 +140,22 @@ pub fn part2(input: &Map) -> usize {
                         }
                         std::collections::hash_map::Entry::Occupied(entry) => {
                             if *entry.get() == loop_direction {
-                                total += 1;
                                 loop_visited[loop_row][loop_col] = 'T';
-                                for i in loop_visited {
-                                    for j in i {
-                                        print!("{j}");
-                                    }
-                                    println!();
-                                }
-                                println!();
-                                println!();
+                                // for i in loop_visited {
+                                //     for j in i {
+                                //         print!("{j}");
+                                //     }
+                                //     println!();
+                                // }
+                                // println!();
+                                // println!();
+                                total += 1;
                                 break;
                             }
                         }
                     }
                 }
             }
-
-            // total += 1;
-            row = next_row;
-            col = next_col;
         }
     }
     total
