@@ -16,12 +16,7 @@ pub fn blink(stone: usize, counter: usize, limit: usize) -> usize {
     if stone == 0 {
         stack += blink(1, counter + 1, limit);
     } else {
-        let mut div = stone;
-        let mut count = 0;
-        while div > 0 {
-            div /= 10;
-            count += 1;
-        }
+        let count = stone.ilog10() + 1;
         if count % 2 == 0 {
             stack += blink(stone / 10_usize.pow(count / 2), counter + 1, limit);
             stack += blink(stone % 10_usize.pow(count / 2), counter + 1, limit);
@@ -63,7 +58,7 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        assert_eq!(55312, part2(&input_generator(INPUT)))
+        assert_eq!(65601038650482, part2(&input_generator(INPUT)))
     }
 }
 
