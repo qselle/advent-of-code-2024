@@ -97,11 +97,7 @@ pub fn part1(input: &[Disk]) -> usize {
                     pos += 1;
                 }
             }
-            Disk::Free { blocks } => {
-                for _ in 0..blocks {
-                    pos += 1;
-                }
-            }
+            _ => unreachable!(),
         }
     }
     res
@@ -109,12 +105,12 @@ pub fn part1(input: &[Disk]) -> usize {
 
 #[aoc(day9, part2)]
 pub fn part2(input: &[Disk]) -> usize {
-    let mut i = 0;
+    let mut j = input.len() - 1;
     let mut input = input.to_vec();
 
     loop {
-        // for j in &input {
-        //     match j {
+        // for file in &input {
+        //     match file {
         //         Disk::File { id, blocks } => {
         //             print!("{}", id.to_string().repeat(*blocks));
         //         }
@@ -125,45 +121,56 @@ pub fn part2(input: &[Disk]) -> usize {
         // }
         // println!();
 
-        match input[i] {
-            Disk::File { id: _, blocks: _ } => {
-                i += 1;
+        match input[j] {
+            Disk::Free { blocks: _ } => {
+                j -= 1;
             }
-            Disk::Free {
-                blocks: free_blocks,
+            Disk::File {
+                id: file_id,
+                blocks: file_blocks,
             } => {
-                if let Some(last) = input.pop() {
-                    match last {
-                        Disk::Free { blocks: _ } => continue,
-                        Disk::File { id, blocks } => match blocks.cmp(&free_blocks) {
+                let mut i = 0;
+                while i < j {
+                    match input[i] {
+                        Disk::File { id: _, blocks: _ } => i += 1,
+                        Disk::Free {
+                            blocks: free_blocks,
+                        } => match file_blocks.cmp(&free_blocks) {
                             std::cmp::Ordering::Equal => {
-                                input[i] = last;
-                                i += 1;
-                            }
-                            std::cmp::Ordering::Less => {
-                                input.insert(i, last);
-                                input[i + 1] = Disk::Free {
-                                    blocks: free_blocks - blocks,
-                                };
-                                i += 1;
-                            }
-                            std::cmp::Ordering::Greater => {
                                 input[i] = Disk::File {
-                                    id,
+                                    id: file_id,
+                                    blocks: file_blocks,
+                                };
+                                input[j] = Disk::Free {
                                     blocks: free_blocks,
                                 };
-                                input.push(Disk::File {
-                                    id,
-                                    blocks: blocks - free_blocks,
-                                });
-                                i += 1;
+                                break;
                             }
+                            std::cmp::Ordering::Less => {
+                                input.insert(
+                                    i,
+                                    Disk::File {
+                                        id: file_id,
+                                        blocks: file_blocks,
+                                    },
+                                );
+                                j += 1;
+                                input[i + 1] = Disk::Free {
+                                    blocks: free_blocks - file_blocks,
+                                };
+                                input[j] = Disk::Free {
+                                    blocks: file_blocks,
+                                };
+                                break;
+                            }
+                            std::cmp::Ordering::Greater => i += 1,
                         },
                     }
                 }
+                j -= 1;
             }
         }
-        if i >= input.len() {
+        if j == 0 {
             break;
         }
     }
@@ -178,7 +185,11 @@ pub fn part2(input: &[Disk]) -> usize {
                     pos += 1;
                 }
             }
-            _ => unreachable!(),
+            Disk::Free { blocks } => {
+                for _ in 0..blocks {
+                    pos += 1;
+                }
+            }
         }
     }
     res
@@ -195,8 +206,8 @@ mod tests {
         assert_eq!(1928, part1(&input_generator(INPUT)))
     }
 
-    // #[test]
-    // fn test_part2() {
-    //     assert_eq!(1, part2(&input_generator(INPUT)))
-    // }
+    #[test]
+    fn test_part2() {
+        assert_eq!(2858, part2(&input_generator(INPUT)))
+    }
 }
