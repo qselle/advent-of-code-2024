@@ -35,7 +35,29 @@ pub fn part1(input: &[usize]) -> usize {
 }
 
 #[aoc(day22, part2)]
-pub fn part2(_input: &[usize]) -> usize {
+pub fn part2(input: &[usize]) -> usize {
+    let mut onces:Vec<Vec<usize>> = vec![];
+
+    for secret in input {
+        let mut secret = *secret;
+
+        for _ in 0..2000 {
+            let mut tmp;
+
+            let operations = [
+                |s: usize| s * 64,   // step1
+                |s: usize| s / 32,   // step2
+                |s: usize| s * 2048, // step3
+            ];
+
+            for op in operations {
+                tmp = op(secret);
+                secret ^= tmp;
+                secret %= PRUNE;
+            }
+        }
+        total += secret;
+    }
     0
 }
 
