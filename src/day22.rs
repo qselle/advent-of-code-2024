@@ -36,7 +36,7 @@ pub fn part1(input: &[usize]) -> usize {
 
 #[aoc(day22, part2)]
 pub fn part2(input: &[usize]) -> usize {
-    let mut onces:Vec<Vec<usize>> = vec![];
+    let mut onces: Vec<Vec<usize>> = vec![];
 
     for secret in input {
         let mut secret = *secret;

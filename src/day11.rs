@@ -17,7 +17,7 @@ pub fn blink(stone: usize, counter: usize, limit: usize) -> usize {
         stack += blink(1, counter + 1, limit);
     } else {
         let count = stone.ilog10() + 1;
-        if count % 2 == 0 {
+        if count.is_multiple_of(2) {
             stack += blink(stone / 10_usize.pow(count / 2), counter + 1, limit);
             stack += blink(stone % 10_usize.pow(count / 2), counter + 1, limit);
         } else {
